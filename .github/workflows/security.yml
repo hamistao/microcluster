@@ -20,11 +20,16 @@ jobs:
   trivy-repo:
     name: Trivy vulnerability scanner - Repository
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        version:
+          - v3
+          - v2
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ matrix.version }}
 
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
@@ -39,4 +44,4 @@ jobs:
         with:
           sarif_file: "trivy-microcluster-repo-scan-results.sarif"
           sha: ${{ github.sha }}
-          ref: refs/heads/main
+          ref: refs/heads/${{ matrix.version }}
